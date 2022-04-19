@@ -1,6 +1,15 @@
 config_setting(
+    name = "darwin_arm64",
+    values = {"cpu": "darwin_arm64"},
+)
+config_setting(
     name = "darwin",
     values = {"cpu": "darwin"},
+)
+
+config_setting(
+    name = "darwin_x86_64",
+    values = {"cpu": "darwin_x86_64"},
 )
 
 cc_library(
@@ -81,14 +90,18 @@ cc_library(
         "cares/nameser.h",
         "cares/setup_once.h",
     ] + select({
+        ":darwin_arm64": ["config_darwin/ares_config.h"],
         ":darwin": ["config_darwin/ares_config.h"],
+        ":darwin_x86_64": ["config_darwin/ares_config.h"],
         "//conditions:default": ["config_linux/ares_config.h"],
     }),
     includes = [
         ".",
         "cares"
     ] + select({
+        ":darwin_arm64": ["config_darwin"],
         ":darwin": ["config_darwin"],
+        ":darwin_x86_64": ["config_darwin"],
         "//conditions:default": ["config_linux"],
     }),
     linkstatic = 1,
